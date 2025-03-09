@@ -25,6 +25,44 @@ This is a TypeScript-based MCP server that implements a simple notes system. It 
   - Includes all note contents as embedded resources
   - Returns structured prompt for LLM summarization
 
+## How the Weather Server Works with LLMs
+
+The weather-server uses the Model Context Protocol (MCP) to enhance LLM interactions by providing structured weather data. Here's how it works:
+
+```mermaid
+graph TD
+    A[User] -->|Weather Query| B[Claude/LLM]
+    B -->|Activates| C[Weather MCP Server]
+    
+    subgraph Weather Server
+        C -->|Request| D[Weather API Client]
+        D -->|Fetch Data| E[Weather API]
+        E -->|Response| D
+        D -->|Format Data| C
+        F[Cache] <-->|Store/Retrieve| D
+    end
+    
+    C -->|Structured Data| B
+    B -->|Natural Response| A
+    
+    style Weather Server fill:#f0f0f0,stroke:#333,stroke-width:2px
+    style B fill:#e1f5fe
+    style E fill:#fff59d
+```
+
+**Process Flow:**
+
+1. **Initial Query**: User asks the LLM about weather conditions
+2. **MCP Detection**: LLM recognizes weather-related query and activates the MCP server
+3. **Data Retrieval**: Weather server fetches relevant weather data
+4. **Context Enhancement**: Server provides structured weather data back to LLM
+5. **Response Generation**: LLM uses enhanced context to provide accurate weather information
+
+### Tools Integration
+- Weather data is provided through MCP tools like `get_weather` and `get_forecast`
+- Each tool returns structured JSON data that the LLM can easily interpret
+- Historical data is cached for efficient responses
+
 ## Development
 
 Install dependencies:
